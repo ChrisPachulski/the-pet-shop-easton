@@ -1,7 +1,6 @@
-pacman::p_load(httr, jsonlite, glue, dplyr, lubridate)
+pacman::p_load(httr, jsonlite, glue, dplyr, lubridate, purrr)
 
 generate_puppy_story_with_image = function(pups_df) {
-  pacman::p_load(httr, jsonlite, glue, dplyr, lubridate, purrr)
   
   api_key = Sys.getenv("GPT_API_KEY")
   if(api_key == "") stop("GPT_API_KEY not set in .Renviron")
