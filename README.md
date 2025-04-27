@@ -1,4 +1,4 @@
-# 🐾 The Pet Shop Easton: Puppy Notifications and Sales Tracking
+# 🐾 The Pet Shop Easton: Puppy Emails and Sales Tracking
 
 This repository contains R scripts tailored specifically to support our personal project of tracking available puppies at The Pet Shop in Easton, PA. The project helps ensure we never miss another chance at adopting our favorite breeds—especially after that near miss when I almost convinced my wife we needed another dog, only to find the adorable little pup already spoken for. A Sunday well-spent to avoid missing out on future dachshund or basset hound opportunities!
 
