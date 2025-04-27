@@ -1,7 +1,6 @@
 send_email_alert = function(subject, email_content) {
   
   library(gmailr)
-  library(stringr)
   
   oauth_path = Sys.getenv("TPSE_GMAIL_OAUTH_JSON")
   token_path = Sys.getenv("TPSE_GMAIL_TOKEN")
@@ -15,8 +14,8 @@ send_email_alert = function(subject, email_content) {
   gm_auth_configure(path = oauth_path)
   gm_auth(token = gm_token_read(token_path))
   
-  # Split the comma-separated string into a vector of emails
-  to_emails_vec = str_split(to_email, "\\s*,\\s*")[[1]]
+  # Parse multiple recipients
+  to_emails_vec = unlist(strsplit(to_email, "\\s*,\\s*"))
   
   email_message = gm_mime() %>%
     gm_to(to_emails_vec) %>%
@@ -31,4 +30,5 @@ send_email_alert = function(subject, email_content) {
     base::message("🚨 Error sending email: ", e$message)
   })
 }
+
 
