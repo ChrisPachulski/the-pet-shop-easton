@@ -1,4 +1,4 @@
-pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate)
+pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate, cronR)
 
 source("R/authenticate.R")
 source("R/scraping.R")

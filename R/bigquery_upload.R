@@ -1,5 +1,5 @@
 upload_to_bq = function(df, table_header, con) {
-  table_name = paste0(gsub('-','_',(Sys.Date()-1)),"_",table_header)
+  table_name = paste0(gsub('-','_',(Sys.Date())),"_",table_header)
   mybq = bq_table(
     project = "the-pet-shop-easton",
     dataset = "available_puppies",
