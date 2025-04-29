@@ -29,7 +29,7 @@ detect_adoptions = function(con, table_header = "puppies") {
   )
   
   adoption_status_df = yesterday_df %>%
-    anti_join(today_df, by = c("url","name", "breed", "dob","gender","active","shedding","breed_known_to_be","dam_usda","breeder_type","age")) %>%
+    anti_join(today_df, by = c("url","name", "breed", "dob","gender","active","shedding","breed_known_to_be","dam_usda","breeder_type")) %>%
     mutate(
       adoption_date = Sys.Date(),
       status = "Adopted"
@@ -58,6 +58,7 @@ detect_adoptions = function(con, table_header = "puppies") {
     write_disposition = "WRITE_TRUNCATE"
   )
   
+  print(adoption_status_df)
   message("Adoption status uploaded successfully to table: ", adopted_table_name)
 }
 
