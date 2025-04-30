@@ -1,12 +1,12 @@
 pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate, cronR, shinyFiles)
 
-source("R/authenticate.R")
-source("R/scraping.R")
-source("R/cleaning.R")
-source("R/bigquery_upload.R")
-source("R/detect_adoptions.R")
-source("R/email_content.R")
-source("R/send_email.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/authenticate.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/scraping.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/cleaning.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/bigquery_upload.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/detect_adoptions.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/email_content.R")
+source("/Users/cujo253/Documents/the-pet-shop-easton/R/send_email.R")
 
 # Execute script
 url = "https://thepetshopinc.com/available-puppies"
