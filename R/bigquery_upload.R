@@ -16,6 +16,6 @@ upload_to_bq = function(df, table_header, con) {
     write_disposition = "WRITE_TRUNCATE"
   )
 
-  message("BQ Available Puppies Upload Successful!")
+  base::message("BQ Available Puppies Upload Successful!")
 }
 

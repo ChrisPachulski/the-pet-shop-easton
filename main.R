@@ -1,4 +1,8 @@
-pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate, cronR, shinyFiles)
+pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate, cronR, shinyFiles, gmailr)
+
+setwd("/Users/cujo253/Documents/the-pet-shop-easton")
+
+readRenviron(".Renviron")
 
 source("/Users/cujo253/Documents/the-pet-shop-easton/R/authenticate.R")
 source("/Users/cujo253/Documents/the-pet-shop-easton/R/scraping.R")
@@ -32,7 +36,7 @@ if (nrow(pups_of_interest) > 0) {
     email_content = email_body
   )
 } else {
-  message("No matching puppies found. No email sent.")
+  base::message("No matching puppies found. No email sent.")
 }
 
 
