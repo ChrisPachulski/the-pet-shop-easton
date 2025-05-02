@@ -1,18 +1,16 @@
 pacman::p_load(httr, jsonlite, glue, dplyr, lubridate, purrr)
 
-generate_puppy_story_with_image = function(pups_df) {
+generate_puppy_story_with_image = function(pups_df, max_retries = 3) {
   
   api_key = Sys.getenv("GPT_API_KEY")
   if(api_key == "") stop("GPT_API_KEY not set in .Renviron")
   
   openai_url = "https://api.openai.com/v1/chat/completions"
   
-  # Scrape puppy images
   pup_images = pups_df %>% rowwise() %>% mutate(
     image_url = scrape_puppy_image(url)$result$image_url
   ) %>% ungroup()
   
-  # Group puppy details
   puppy_details_df = pup_images %>% 
     mutate(shop_link = paste0("<a href='", url, "'>View Puppy</a>")) %>%
     select(name, breed, dob, gender, active, shedding, age, image_url, shop_link)
@@ -22,7 +20,6 @@ generate_puppy_story_with_image = function(pups_df) {
   for(i in 1:nrow(puppy_details_df)){
     pup = puppy_details_df[i,]
     
-    # GPT Vision API call to explicitly ignore background and verify breed visually
     messages = list(
       list(role = "system", content = glue("Provide a factual description of the puppy based solely on the image provided, explicitly ignoring the background, in an endearing tone highlighting their attributes. Explicitly state the breed you see and confirm whether it matches the provided breed '{pup$breed}'.")),
       list(role = "user", content = list(
@@ -30,21 +27,35 @@ generate_puppy_story_with_image = function(pups_df) {
       ))
     )
     
-    response = POST(
-      openai_url,
-      add_headers(Authorization = paste("Bearer", api_key)),
-      content_type_json(),
-      encode = "json",
-      body = list(
-        model = "gpt-4o",
-        messages = messages,
-        temperature = 0.0,
-        max_tokens = 150
-      )
-    )
+    retry_count = 0
+    success = FALSE
     
-    stop_for_status(response)
-    image_description = content(response, "parsed")$choices[[1]]$message$content
+    while(retry_count < max_retries && !success) {
+      response = POST(
+        openai_url,
+        add_headers(Authorization = paste("Bearer", api_key)),
+        content_type_json(),
+        encode = "json",
+        body = list(
+          model = "gpt-4o",
+          messages = messages,
+          temperature = 0.0,
+          max_tokens = 150
+        )
+      )
+      
+      if (http_status(response)$category == "Success") {
+        image_description = content(response, "parsed")$choices[[1]]$message$content
+        success = TRUE
+      } else {
+        retry_count = retry_count + 1
+        Sys.sleep(1 + retry_count) # incremental backoff
+        if(retry_count == max_retries){
+          warning(glue("Failed to process image for puppy '{pup$name}' after {max_retries} retries. Error: {http_status(response)$message}"))
+          image_description = "Unable to retrieve description due to repeated errors."
+        }
+      }
+    }
     
     email_body = glue(
       "<html><body>",
@@ -64,11 +75,11 @@ generate_puppy_story_with_image = function(pups_df) {
     emails[[i]] = email_body
   }
   
-  # Combine all emails clearly
   full_email_body = paste(emails, collapse = "<hr>")
   
   return(full_email_body)
 }
+
 
 # Final wrapper to generate email content
 create_email_content = function(filtered_pups_df, breed_regex) {

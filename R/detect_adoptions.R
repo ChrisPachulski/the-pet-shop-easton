@@ -36,7 +36,7 @@ detect_adoptions = function(con, table_header = "puppies") {
     )
   
   if (nrow(adoption_status_df) == 0) {
-    message("No adoptions detected today.")
+    base::message("No adoptions detected today.")
     return(NULL)
   }
   
@@ -59,6 +59,6 @@ detect_adoptions = function(con, table_header = "puppies") {
   )
   
   print(adoption_status_df)
-  message("Adoption status uploaded successfully to table: ", adopted_table_name)
+  base::message("Adoption status uploaded successfully to table: ", adopted_table_name)
 }
 
