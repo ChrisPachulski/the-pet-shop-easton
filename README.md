@@ -1,49 +1,118 @@
-# 🐾 The Pet Shop Easton: Puppy Emails and Sales Tracking
+# 🐾 The Pet Shop Easton – Automation System
 
-This repository contains R scripts tailored specifically to support our personal project of tracking available puppies at The Pet Shop in Easton, PA. The project helps ensure we never miss another chance at adopting our favorite breeds—especially after that near miss when I almost convinced my wife we needed another dog, only to find the adorable little pup already spoken for. A Sunday well-spent to avoid missing out on future dachshund or basset hound opportunities!
+This repository automates daily tracking, analysis, and notifications of available puppies at [The Pet Shop Easton](https://thepetshopinc.com/available-puppies).
 
-## 🎯 Goals
+## 📦 Project Structure
 
-- **Puppy Notifications:** Automatically check for puppies matching our preferences, retrieve their images and details, and send timely notifications via email.
-- **Sales Tracking:** Regularly record and store puppy availability data, enabling analysis of sales trends and adoption patterns over time.
+```
+the-pet-shop-easton/
+├── main.R
+├── .Renviron
+├── R/
+│   ├── authenticate.R
+│   ├── scraping.R
+│   ├── cleaning.R
+│   ├── bigquery_upload.R
+│   ├── detect_adoptions.R
+│   ├── email_content.R
+│   ├── send_email.R
+│   └── track_pups_of_interest.R
+└── README.md
+```
 
-## 🔧 How It Works
+## 🚀 Features
 
-The project workflow involves:
+- **Daily Scraping**: Fetches current puppy listings from the website.
+- **Data Cleaning**: Processes and standardizes scraped data.
+- **BigQuery Integration**: Uploads daily data to Google BigQuery into three distinct datasets (`available_puppies`, `pups_of_interest`, and `adopted`) with date-stamped tables.
+- **Adoption Detection**: Identifies and logs adopted puppies by comparing consecutive days.
+- **Interest Tracking**: Monitors specific breeds over consecutive days, assigning a `day_count`.
+- **Email Notifications**: Sends alerts for new puppies of interest.
 
-1. **Web Scraping:** Extract current puppy details and images directly from [The Pet Shop's website](https://thepetshopinc.com/available-puppies).
-2. **Image Analysis:** Leverage OpenAI's GPT-4 Vision API to generate accurate, breed-verified descriptions based on puppy images.
-3. **Email Notifications:** Format these details clearly and email them to us immediately when matching puppies become available.
-4. **Data Logging:** Store daily puppy availability data in Google BigQuery for historical tracking and analysis.
+## 🔧 Setup Instructions
 
-## 📌 Project Structure
+### 1. Clone the Repository
 
-- `scraping.R`: Extracts puppy details and images from the website.
-- `generate_puppy_story_with_image.R`: Uses GPT-4 to provide descriptive summaries based on images.
-- `send_email.R`: Manages sending of email notifications.
-- `upload_to_bq.R`: Uploads the scraped data to BigQuery for long-term storage and analysis.
+```bash
+git clone https://github.com/ChrisPachulski/the-pet-shop-easton.git
+cd the-pet-shop-easton
+```
 
-## 🔑 Environment Variables
+### 2. Install R Dependencies
 
-Ensure these are set in `.Renviron`:
+Ensure R is installed. Then install required packages:
 
-- `GPT_API_KEY`: Your OpenAI GPT-4 API key.
-- `TPSE_GMAIL_OAUTH_JSON`: Path to Gmail OAuth JSON.
-- `TPSE_GMAIL_TOKEN`: Path to Gmail token.
-- `TPSE_ALERT_EMAIL`: Comma-separated emails for notifications.
-- `TPSE_ALERT_FROM`: Email address for sending notifications.
+```r
+install.packages("pacman")
+pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate, cronR, shinyFiles, gmailr)
+```
 
-## 📈 Analytics
+### 3. Configure Environment Variables
 
-Data collected allows us to:
+Create a `.Renviron` file in the root directory with:
 
-- Understand adoption cycles and trends.
-- Monitor breed popularity and turnover rates.
-- Assess overall shop performance and sales patterns over time.
+```
+BQ_SERVICE_ACCOUNT=path/to/your/service-account.json
+TPSE_GMAIL_OAUTH_JSON=path/to/your/gmail-oauth.json
+TPSE_GMAIL_TOKEN=path/to/your/gmail-token.rds
+TPSE_ALERT_EMAIL=recipient@example.com
+TPSE_ALERT_FROM=sender@example.com
+```
+
+### 4. Authenticate Services
+
+Authentication handled via `authenticate.R` script using provided credentials.
+
+## 🗓️ Daily Workflow
+
+### Run `main.R`
+
+Orchestrates:
+
+- Authenticates services.
+- Scrapes and cleans data.
+- Uploads data to BigQuery datasets (`available_puppies`, `pups_of_interest`, and `adopted`).
+- Detects adoptions.
+- Filters puppies of interest.
+- Tracks consecutive appearances and assigns `day_count`.
+- Sends email alerts (`day_count == 1`).
+
+### Automate with Cron
+
+Set up cron to automate `main.R` daily. Example (8 AM daily):
+
+```bash
+0 8 * * * Rscript /path/to/the-pet-shop-easton/main.R
+```
+
+## 📊 BigQuery Table Structure
+
+- **Datasets**:
+  - `available_puppies`
+  - `pups_of_interest`
+  - `adopted`
+- **Tables**:
+  - `YYYY_MM_DD_puppies` (available_puppies)
+  - `YYYY_MM_DD_pups_of_interest` (pups_of_interest)
+  - `YYYY_MM_DD_adopted` (adopted)
+
+## 📧 Email Notifications
+
+- Sent via `gmailr`.
+- Puppies with `day_count == 1` included.
+- Emails include details and images.
+
+## 🛠️ Contributing
+
+Contributions welcome! Fork and submit pull requests.
+
+## 📄 License
+
+Licensed under MIT.
 
 ---
 
-Built with ❤️ in R to ensure we never again miss the perfect pup.
+Contact: [Chris Pachulski](mailto:your.email@example.com).
 
 
 
