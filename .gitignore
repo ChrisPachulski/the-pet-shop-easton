@@ -5,3 +5,6 @@
 *.json
 *.rds
 *.log
+*.secrets
+/Users/cujo253/Documents/the-pet-shop-easton/tpse_gmail_token.rds
+/Users/cujo253/Documents/the-pet-shop-easton/tpse-gmail-token.rds
