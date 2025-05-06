@@ -4,12 +4,12 @@ track_and_upload_pups_of_interest <- function(pups_of_interest, con) {
   yesterday_date <- gsub("-", "_", Sys.Date() - 1)
   
   # Today's and yesterday's table names clearly referencing pups_of_interest ONLY
-  today_table_name <- paste0(today_date, "_pups_of_interest")
+  today_table_name <- "_pups_of_interest"
   yesterday_table_name <- paste0(yesterday_date, "_pups_of_interest")
   
   # Query yesterday's pups_of_interest table if exists
   yesterday_pups <- tryCatch(
-    dbGetQuery(con, glue::glue("
+    DBI::dbGetQuery(con, glue::glue("
       SELECT url, day_count FROM `the-pet-shop-easton.pups_of_interest.{yesterday_table_name}`
     ")),
     error = function(e) tibble(url = character(), day_count = integer())
