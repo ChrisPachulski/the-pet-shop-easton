@@ -1,4 +1,5 @@
 scrape_puppy_details = safely(function(link) {
+  Sys.sleep(.5)
   puppy_page = read_html(link)
 
   puppy_info = puppy_page %>%
@@ -31,7 +32,7 @@ fetch_all_puppy_details = function(main_url) {
   puppy_details = map_dfr(available_puppies, ~{
     result = scrape_puppy_details(.x)
     if (!is.null(result$error)) {
-      message("Failed to scrape: ", .x, " | Error: ", result$error)
+      base::message("Failed to scrape: ", .x, " | Error: ", result$error)
       return(NULL)
     }
     result$result
