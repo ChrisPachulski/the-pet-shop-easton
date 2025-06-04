@@ -1,5 +1,7 @@
 pacman::p_load(tidyverse, rvest, janitor, httr, readxl, bigrquery, googleAuthR, lubridate, cronR, shinyFiles, gmailr)
 
+Sys.setlocale("LC_ALL", "en_US.UTF-8")
+
 setwd("/Users/cujo253/Documents/the-pet-shop-easton")
 
 readRenviron(".Renviron")
