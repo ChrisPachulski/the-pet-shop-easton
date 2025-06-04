@@ -21,7 +21,7 @@ generate_puppy_story_with_image = function(pups_df, max_retries = 3) {
     pup = puppy_details_df[i,]
     
     messages = list(
-      list(role = "system", content = glue("Provide a factual description of the puppy based solely on the image provided, explicitly ignoring the background, in an endearing tone highlighting their attributes. Explicitly state the breed you see and confirm whether it matches the provided breed '{pup$breed}'.")),
+      list(role = "system", content = glue("Create a witty back story of the puppy based solely on the image provided that urges the reader to adopt, explicitly ignoring the background, in an endearing tone highlighting their attributes. Explicitly state the breed you see and confirm whether it matches the provided breed '{pup$breed}'.")),
       list(role = "user", content = list(
         list(type = "image_url", image_url = list(url = pup$image_url))
       ))
@@ -40,7 +40,7 @@ generate_puppy_story_with_image = function(pups_df, max_retries = 3) {
           model = "gpt-4o",
           messages = messages,
           temperature = 0.0,
-          max_tokens = 150
+          max_tokens = 1500
         )
       )
       
