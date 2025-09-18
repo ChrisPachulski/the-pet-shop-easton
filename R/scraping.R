@@ -9,7 +9,11 @@ scrape_puppy_details = safely(function(link) {
     filter(str_detect(value, "^(Breed|Name|DOB|Gender|Active|Shedding|Breed known to be|Dam USDA)")) %>%
     separate(value, into = c("field", "detail"), sep = ":\\s*|\\s\\#", extra = "merge") %>%
     pivot_wider(names_from = field, values_from = detail)
-
+  
+  expected_cols = c("Name", "Breed", "DOB", "Gender", "Active", "Shedding", "Breed known to be", "Dam USDA")
+  missing_cols = setdiff(expected_cols, names(puppy_info))
+  puppy_info[missing_cols] = NA
+  
   puppy_info %>%
     mutate(URL = link) %>%
     select(URL, Name, Breed, DOB, Gender, Active, Shedding, `Breed known to be`, `Dam USDA`)
