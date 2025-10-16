@@ -6,9 +6,15 @@ scrape_puppy_details = safely(function(link) {
     html_elements(".elementor-icon-list-text") %>%
     html_text2() %>%
     as_tibble() %>%
-    filter(str_detect(value, "^(Breed|Name|DOB|Gender|Active|Shedding|Breed known to be|Dam USDA)")) %>%
+    filter(str_detect(value, "^(Breed|Name|DOB|Gender|Activ|Shedding|Breed known to be|Dam USDA)")) %>%
     separate(value, into = c("field", "detail"), sep = ":\\s*|\\s\\#", extra = "merge") %>%
-    pivot_wider(names_from = field, values_from = detail)
+    pivot_wider(names_from = field, values_from = detail) %>% 
+    rename_with(~ .x %>%
+                  str_squish() %>%
+                  str_replace("Activ.*", "Active") %>%
+                  str_replace("Shedd.*", "Shedding") %>%
+                  str_replace("Dam.*", "Dam USDA"),
+                everything())
   
   expected_cols = c("Name", "Breed", "DOB", "Gender", "Active", "Shedding", "Breed known to be", "Dam USDA")
   missing_cols = setdiff(expected_cols, names(puppy_info))
