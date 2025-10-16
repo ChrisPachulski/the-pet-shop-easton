@@ -27,7 +27,7 @@ upload_to_bq(parsed_puppy_data, "available_puppies", "puppies", con)
 
 detect_adoptions(con, table_header = "puppies")
 
-breed_regex = "(dachs|basset)"
+breed_regex = "(dachs|basset|dox)"
 
 pups_of_interest = filter_puppies_by_breed(parsed_puppy_data, breed_regex)
 
